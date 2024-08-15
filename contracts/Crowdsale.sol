@@ -2,7 +2,22 @@
 
 pragma solidity ^0.8.0;
 
+import "./Token.sol";
+
 contract Crowdsale {
-	string public name = "Crowdsale";
+	Token public token; 
+
+
+         ////calling the contract Token///
+	constructor(
+	Token _token
+	) {
+		token = _token;
+
+	}
+
+	function buyTokens(uint256 _amount) public {
+		token.transfer(msg.sender, _amount);
+	}
 }
 
