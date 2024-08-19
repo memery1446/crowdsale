@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 import "./Token.sol";
 
 contract Crowdsale {
-	address public owner;
+	address owner;
 	Token public token; 
 	uint256 public price;
 	uint256 public maxTokens;
@@ -24,9 +24,11 @@ contract Crowdsale {
 		token = _token;
 		price = _price;
 		maxTokens = _maxTokens;
+	}
 
-		//owner calls the constructor function with deployment
-		//doesn't need to be added to arg's
+	modifier onlyOwner() {
+		require(msg.sender == owner, "Caller is not the owner");
+		_; //stands for function bodies below
 	}
 
 	receive() external payable {
@@ -45,7 +47,12 @@ contract Crowdsale {
 		emit Buy(_amount, msg.sender);
 	}
 
-	function finalize() public {
+	function setPrice(uint256 _price) public onlyOwner {
+		price = _price;
+	}
+
+	function finalize() public onlyOwner {
+
 		//send eth to creator
 		require(token.transfer(owner, token.balanceOf(address(this))));
 
