@@ -128,8 +128,6 @@ describe('Crowdsale', () => {
     })
   })
 
-
-
   describe('Finalizing Sale', () => {
       let transaction, result
       let amount = tokens(10)
