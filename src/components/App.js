@@ -5,6 +5,9 @@ import { ethers } from 'ethers'
 //components
 import Navigation from './Navigation';
 import Info from './Info';
+import Progress from './Progress';
+import Loading from './Loading';
+
 
 
 // ABI's
@@ -20,6 +23,10 @@ function App() {
 
     const [account, setAccount] = useState(null)
     const [accountBalance, setAccountBalance] = useState(0)
+
+    const [price, setPrice] = useState(0)
+    const [maxTokens, setMaxTokens] = useState(0)
+    const [tokensSold, setTokensSold] = useState(0)
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -42,9 +49,17 @@ function App() {
       setAccount(account)
 
       //fetch acct bal
-      const accountBalance = ethers.utils.formatUnits(await token.balanceOf(account)) 
+      const accountBalance = ethers.utils.formatUnits(await token.balanceOf(account), 18) 
       setAccountBalance(accountBalance)
 
+      const price = ethers.utils.formatUnits(await crowdsale.price(), 18)
+      setPrice(price)
+
+      const maxTokens = ethers.utils.formatUnits(await crowdsale.maxTokens(), 18)
+      setMaxTokens(maxTokens)
+
+      const tokensSold = ethers.utils.formatUnits(await crowdsale.tokensSold(), 18)
+      setTokensSold(tokensSold)
 
       setIsLoading(false)
 
@@ -59,11 +74,24 @@ function App() {
     }, [isLoading])
 
   return(
-  <Container>
-  <Navigation />
-  <hr />
-  {account && (
-  
+    <Container>
+      <Navigation />
+
+      <h1 className='my-4 text-center'>Introducing DApp Token!</h1>
+
+      {isLoading ? (
+          <Loading />
+        ) : (
+         <>
+            <p className='text-center'><strong>Current Price:</strong> {price} ETH</p>
+            <Progress maxTokens={maxTokens} tokensSold={tokensSold} />
+         </>
+        )}
+
+
+        <hr />
+
+        {account && (  
   <Info account={account} accountBalance={accountBalance} />
   )}
   </Container>    
