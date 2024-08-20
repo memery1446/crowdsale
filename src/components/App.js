@@ -4,12 +4,15 @@ import { ethers } from 'ethers'
 
 //components
 import Navigation from './Navigation';
-
+import Info from './Info';
 
 
 function App() {
 
     const [account, setAccount] = useState(null)
+
+
+
 
     // account -> variable of current acct value
     // setAccount -> function to update account value
@@ -17,14 +20,14 @@ function App() {
 
     const loadBlockchainData = async () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
-      console.log(provider)
+    
 
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
       const account = ethers.utils.getAddress(accounts[0])
-      console.log(account)
+      setAccount(account)
 
 
-        //add to state
+    
     }
 
     useEffect(() => {
@@ -34,7 +37,11 @@ function App() {
   return(
   <Container>
   <Navigation />
-  {/* {read from state */}}
+  <hr />
+  {account && (
+  
+  <Info account={account} />
+  )}
   </Container>    
   )
 }
