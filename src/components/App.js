@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 
 //components
 import Navigation from './Navigation';
+import Buy from './Buy';
 import Info from './Info';
 import Progress from './Progress';
 import Loading from './Loading';
@@ -84,6 +85,7 @@ function App() {
         ) : (
          <>
             <p className='text-center'><strong>Current Price:</strong> {price} ETH</p>
+            <Buy provider={provider} price={price} crowdsale={crowdsale} setIsLoading={setIsLoading} />
             <Progress maxTokens={maxTokens} tokensSold={tokensSold} />
          </>
         )}
@@ -99,3 +101,7 @@ function App() {
 }
 
 export default App;
+
+
+
+
