@@ -52,6 +52,7 @@ describe('Crowdsale', () => {
     let amount = tokens(10)
 
     describe('Success', () => {
+
       beforeEach(async () => {
         transaction = await crowdsale.connect(user1).buyTokens(amount, { value: ether(10) })
         result = await transaction.wait()
@@ -167,16 +168,5 @@ describe('Crowdsale', () => {
   })
 
 })
-
-
-
-
-
-
-
-
-
-
-
 
 

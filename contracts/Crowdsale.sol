@@ -12,6 +12,8 @@ contract Crowdsale {
 	uint256 public maxTokens;
 	uint256 public tokensSold;
 
+	mapping(address => bool) public whitelist;
+
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
 
@@ -28,7 +30,12 @@ contract Crowdsale {
 
 	modifier onlyOwner() {
 		require(msg.sender == owner, "Caller is not the owner");
-		_; //stands for function bodies below
+		_; 
+	}
+
+	modifier onlyWhitelist() {
+		require(whitelist[msg.sender], "Caller is not on the whitelist");
+		_;
 	}
 
 	receive() external payable {
@@ -65,6 +72,10 @@ contract Crowdsale {
 		//preferred pattern for sending eth
 
 		emit Finalize(tokensSold, value);
+	}
+
+	function addToWhitelist(address _address) public {
+		whitelist[_address] = true;
 	}
 }
 
