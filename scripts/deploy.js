@@ -6,6 +6,7 @@
 // global scope, and execute the script.
 const hre = require("hardhat");
 
+
 async function main() {
   const NAME = 'Dapp University'
   const SYMBOL = 'DAPP'
@@ -30,6 +31,8 @@ async function main() {
   await transaction.wait()
 
   console.log(`Tokens transferred to Crowdsale\n`)
+
+  
 }
 
 // We recommend this pattern to be able to use async/await everywhere

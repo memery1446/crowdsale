@@ -12,10 +12,18 @@ contract Crowdsale {
 	uint256 public maxTokens;
 	uint256 public tokensSold;
 
-	mapping(address => bool) public whitelist;
+	struct WhitelistAddress {
+		address payable singleWhitelisted;
+		bool isWhitelisted;
+	}
+
+	uint256 public whitelistCount;
+
+	mapping(uint256 => WhitelistAddress) public whitelist;
 
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
+
 
 	constructor(
 	Token _token,
@@ -33,16 +41,21 @@ contract Crowdsale {
 		_; 
 	}
 
-	modifier onlyWhitelist() {
-		require(whitelist[msg.sender], "Caller is not on the whitelist");
-		_;
-	}
-
 	receive() external payable {
 		uint256 amount = msg.value / price;
 		buyTokens(amount * 1e18);
 	}
 
+	function addToWhitelist(
+		address _singleWhitelisted,
+		bool _isWhitelisted
+
+		) public onlyOwner {
+
+		whitelistCount++;
+		whitelist[whitelistCount] = WhitelistAddress( _singleWhitelisted, true);
+	}
+													
 	function buyTokens(uint256 _amount) public payable {		
 		require(msg.value == (_amount / 1e18) * price);
 		require(token.balanceOf(address(this)) >= _amount);		
@@ -74,8 +87,6 @@ contract Crowdsale {
 		emit Finalize(tokensSold, value);
 	}
 
-	function addToWhitelist(address _address) public {
-		whitelist[_address] = true;
-	}
+	
 }
 
