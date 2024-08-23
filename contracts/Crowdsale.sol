@@ -11,8 +11,13 @@ contract Crowdsale {
 	uint256 public price;
 	uint256 public maxTokens;
 	uint256 public tokensSold;
+	uint256 public deadline;
 	
+
+
 	mapping(address => bool) public whitelist;
+
+
 
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
@@ -28,6 +33,7 @@ contract Crowdsale {
 		token = _token;
 		price = _price;
 		maxTokens = _maxTokens;
+
 		
 		
 	}
@@ -35,6 +41,10 @@ contract Crowdsale {
 	modifier onlyOwner() {
 		require(msg.sender == owner, "Caller is not the owner");
 		_; 
+	}
+
+	function setDeadline() public {
+		deadline = block.timestamp + 100;
 	}
 
 	function addToWhitelist(address onWhitelist) public onlyOwner {
@@ -46,6 +56,10 @@ contract Crowdsale {
     	_;
     }
 
+    modifier onlyWhileOpen () {
+    	require(block.timestamp < deadline, "Currently closed");
+    	_;
+    }
 
 	receive() external payable {
 	//require(whitelist[msg.sender] == true);//	
@@ -53,9 +67,11 @@ contract Crowdsale {
 		buyTokens(amount * 1e18);
 	}
 
-	
 
-													
+	function crowdsaleOpen() public view returns (bool) {
+		return block.timestamp < deadline;
+	}
+												
 	function buyTokens(uint256 _amount) public payable {	
 
 		require(msg.value == (_amount / 1e18) * price);
