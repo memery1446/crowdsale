@@ -9,7 +9,7 @@ const ether = tokens
 
 describe('Crowdsale', () => {
   let token, crowdsale
-  let deployer, user1 
+  let deployer, user1, user2
 
   beforeEach(async () => {
       //load contracts//
@@ -24,6 +24,7 @@ describe('Crowdsale', () => {
     accounts = await ethers.getSigners()
       deployer = accounts[0]
       user1 = accounts[1]
+      user2 = accounts[2]
   
 
       //deploy crowdsale//
@@ -107,8 +108,15 @@ describe('Crowdsale', () => {
         it('updates user token balance', async () => {
           expect(await token.balanceOf(user1.address)).to.equal(amount)
         })
+
+       
       })
-  
+      
+      describe('Failure', () => {
+        it('prevents non-whitelisted people from buying', async () => {
+          expect(user1.sendTransaction({ to: crowdsale.address, value: amount, gasLimit: 51000})).to.be.reverted
+        })
+      })
 })
 
   describe('Updating Price', () => {

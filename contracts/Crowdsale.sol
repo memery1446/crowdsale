@@ -37,13 +37,18 @@ contract Crowdsale {
 		_; 
 	}
 
-	function addToWhitelist(address onWhitelist) public {
+	function addToWhitelist(address onWhitelist) public onlyOwner {
         whitelist[onWhitelist] = true;
+    }
+
+    modifier onlyWhitelist () {
+    	require(whitelist[msg.sender], "Not on Whitelist");
+    	_;
     }
 
 
 	receive() external payable {
-
+	//require(whitelist[msg.sender] == true);//	
 		uint256 amount = msg.value / price;
 		buyTokens(amount * 1e18);
 	}
@@ -52,7 +57,7 @@ contract Crowdsale {
 
 													
 	function buyTokens(uint256 _amount) public payable {	
-		//require(whitelist[msg.sender] == true);	
+
 		require(msg.value == (_amount / 1e18) * price);
 		require(token.balanceOf(address(this)) >= _amount);		
 		require(token.transfer(msg.sender, _amount));
