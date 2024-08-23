@@ -9,7 +9,11 @@ const ether = tokens
 
 describe('Crowdsale', () => {
   let token, crowdsale
-  let deployer, user1
+  let deployer, 
+      user1, 
+      user2, 
+      user3, 
+      user
 
   beforeEach(async () => {
       //load contracts//
@@ -24,6 +28,9 @@ describe('Crowdsale', () => {
     accounts = await ethers.getSigners()
       deployer = accounts[0]
       user1 = accounts[1]
+      user2 = accounts[2]
+      user3 = accounts[3]
+      user = accounts[4] //not whitelisted
 
       //deploy crowdsale//
     crowdsale = await Crowdsale.deploy(token.address, ether(1), '1000000')
@@ -31,7 +38,8 @@ describe('Crowdsale', () => {
       //send tokens to crowdsale//
     let transaction = await token.connect(deployer).transfer(crowdsale.address, tokens(1000000))
     await transaction.wait()
-    })
+
+
 
   describe('Deployment', () => {
 
@@ -57,6 +65,7 @@ describe('Crowdsale', () => {
         transaction = await crowdsale.connect(user1).buyTokens(amount, { value: ether(10) })
         result = await transaction.wait()
       })
+
       it('transfers tokens', async () => {
         expect(await token.balanceOf(crowdsale.address)).to.equal(tokens(999990))
         expect(await token.balanceOf(user1.address)).to.equal(amount)
@@ -77,6 +86,10 @@ describe('Crowdsale', () => {
       it('rejects insufficient ETH', async () => {
         await expect(crowdsale.connect(user1).buyTokens(tokens(10), { value: 0 })).to.be.reverted
           ////if they don't send in enough, ETH, reverted///
+      })
+      
+      it('rejects non-members', async () => {
+        await expect(crowdsale.connect(user).addMember(_address, false)).to.be.reverted
       })
     })
 
@@ -168,5 +181,7 @@ describe('Crowdsale', () => {
   })
 
 })
+})
+
 
 
