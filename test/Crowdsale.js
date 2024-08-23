@@ -9,11 +9,7 @@ const ether = tokens
 
 describe('Crowdsale', () => {
   let token, crowdsale
-  let deployer, 
-      user1, 
-      user2, 
-      user3, 
-      user
+  let deployer, user1 
 
   beforeEach(async () => {
       //load contracts//
@@ -28,9 +24,7 @@ describe('Crowdsale', () => {
     accounts = await ethers.getSigners()
       deployer = accounts[0]
       user1 = accounts[1]
-      user2 = accounts[2]
-      user3 = accounts[3]
-      user = accounts[4] //not whitelisted
+  
 
       //deploy crowdsale//
     crowdsale = await Crowdsale.deploy(token.address, ether(1), '1000000')
@@ -39,7 +33,7 @@ describe('Crowdsale', () => {
     let transaction = await token.connect(deployer).transfer(crowdsale.address, tokens(1000000))
     await transaction.wait()
 
-
+})
 
   describe('Deployment', () => {
 
@@ -55,6 +49,7 @@ describe('Crowdsale', () => {
     })
   })
 
+
   describe('Buying Tokens', () => {
     let transaction, result
     let amount = tokens(10)
@@ -62,6 +57,7 @@ describe('Crowdsale', () => {
     describe('Success', () => {
 
       beforeEach(async () => {
+  
         transaction = await crowdsale.connect(user1).buyTokens(amount, { value: ether(10) })
         result = await transaction.wait()
       })
@@ -79,6 +75,7 @@ describe('Crowdsale', () => {
           await expect(transaction).to.emit(crowdsale, "Buy")
           .withArgs(amount, user1.address)
     })
+
     })
 
     describe('Failure', () => {
@@ -88,9 +85,6 @@ describe('Crowdsale', () => {
           ////if they don't send in enough, ETH, reverted///
       })
       
-      it('rejects non-members', async () => {
-        await expect(crowdsale.connect(user).addMember(_address, false)).to.be.reverted
-      })
     })
 
   })
@@ -114,7 +108,8 @@ describe('Crowdsale', () => {
           expect(await token.balanceOf(user1.address)).to.equal(amount)
         })
       })
-  })
+  
+})
 
   describe('Updating Price', () => {
     let transaction, result
@@ -180,8 +175,8 @@ describe('Crowdsale', () => {
       })
   })
 
-})
-})
+  })
+
 
 
 
