@@ -91,7 +91,7 @@ describe('Crowdsale', () => {
   })
 
   describe('Sending ETH', () => {
-      let transaction, result
+      let transaction, result, whitelist, _addr
       let amount = ether(10)
 
       describe('Success', () => {
@@ -109,12 +109,16 @@ describe('Crowdsale', () => {
           expect(await token.balanceOf(user1.address)).to.equal(amount)
         })
 
+        it('adds to whitelist', async () => {
+          expect(await crowdsale.addWhitelisted(user1.address)).to.equal(true)
+        })
+
        
       })
       
       describe('Failure', () => {
         it('prevents non-whitelisted people from buying', async () => {
-          expect(user1.sendTransaction({ to: crowdsale.address, value: amount, gasLimit: 51000})).to.be.reverted
+          expect(user1.sendTransaction({ to: crowdsale.address, value: amount, gasLimit: 10000})).to.be.reverted
         })
       })
 })

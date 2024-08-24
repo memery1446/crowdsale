@@ -13,28 +13,24 @@ contract Crowdsale {
 	uint256 public tokensSold;
 	uint256 public deadline;
 	
-
-
 	mapping(address => bool) public whitelist;
-
-
+	//currently false by default//
 
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
-
 
 	constructor(
 	Token _token,
 	uint256 _price,
 	uint256 _maxTokens
+	
+
 
 	) {
 		owner = msg.sender;
 		token = _token;
 		price = _price;
-		maxTokens = _maxTokens;
-
-		
+		maxTokens = _maxTokens;	
 		
 	}
 
@@ -47,8 +43,8 @@ contract Crowdsale {
 		deadline = block.timestamp + 100;
 	}
 
-	function addToWhitelist(address onWhitelist) public onlyOwner {
-        whitelist[onWhitelist] = true;
+	function addWhitelisted(address _addr) public onlyOwner {
+        whitelist[_addr] = true;
     }
 
     modifier onlyWhitelist () {
