@@ -13,20 +13,21 @@ contract Crowdsale {
 	uint256 public tokensSold;
 	uint256 public deadline;
 	
+
 	mapping(address => bool) public whitelist;
 	//currently false by default//
+
 
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
 
+
 	constructor(
-	Token _token,
-	uint256 _price,
-	uint256 _maxTokens
-	
-
-
+		Token _token,
+		uint256 _price,
+		uint256 _maxTokens
 	) {
+
 		owner = msg.sender;
 		token = _token;
 		price = _price;
@@ -36,6 +37,7 @@ contract Crowdsale {
 
 	modifier onlyOwner() {
 		require(msg.sender == owner, "Caller is not the owner");
+
 		_; 
 	}
 
@@ -43,22 +45,24 @@ contract Crowdsale {
 		deadline = block.timestamp + 100;
 	}
 
-	function addWhitelisted(address _addr) public onlyOwner {
-        whitelist[_addr] = true;
-    }
+	function addToWhitelist(address addr) public {
+		whitelist[addr] = true;
+	}
 
     modifier onlyWhitelist () {
-    	require(whitelist[msg.sender], "Not on Whitelist");
+    	require(!whitelist[msg.sender], "Not on Whitelist");
+
     	_;
     }
 
     modifier onlyWhileOpen () {
     	require(block.timestamp < deadline, "Currently closed");
+
     	_;
     }
 
 	receive() external payable {
-	//require(whitelist[msg.sender] == true);//	
+	//require(whitelist[msg.sender] = true);//	
 		uint256 amount = msg.value / price;
 		buyTokens(amount * 1e18);
 	}

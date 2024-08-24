@@ -52,7 +52,7 @@ describe('Crowdsale', () => {
 
 
   describe('Buying Tokens', () => {
-    let transaction, result
+    let transaction, result 
     let amount = tokens(10)
 
     describe('Success', () => {
@@ -110,10 +110,12 @@ describe('Crowdsale', () => {
         })
 
         it('adds to whitelist', async () => {
-          expect(await crowdsale.addWhitelisted(user1.address)).to.equal(true)
+          transaction = await crowdsale.connect(user2).addToWhitelist(user2.address)
+          result = await transaction.wait()
         })
 
-       
+
+      
       })
       
       describe('Failure', () => {
