@@ -13,14 +13,19 @@ contract Crowdsale {
 	uint256 public tokensSold;
 	uint256 public deadline;
 	
-
-	mapping(address => bool) public whitelist;
-	//currently false by default//
-
+ mapping (uint256 => Person) public whitelist;
 
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
+	
 
+    struct Person{
+    	uint256 Id;
+        address structAddress;
+        bool structAdded;
+    }
+
+   
 
 	constructor(
 		Token _token,
@@ -41,19 +46,15 @@ contract Crowdsale {
 		_; 
 	}
 
+
+    function addToWhitelist(uint256 _Id, address _address) public  {
+         whitelist[_Id].structAddress = _address;
+         whitelist[_Id].structAdded = true;
+    }
+
 	function setDeadline() public {
 		deadline = block.timestamp + 100;
 	}
-
-	function addToWhitelist(address addr) public {
-		whitelist[addr] = true;
-	}
-
-    modifier onlyWhitelist () {
-    	require(!whitelist[msg.sender], "Not on Whitelist");
-
-    	_;
-    }
 
     modifier onlyWhileOpen () {
     	require(block.timestamp < deadline, "Currently closed");

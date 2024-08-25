@@ -50,6 +50,17 @@ describe('Crowdsale', () => {
     })
   })
 
+  describe('Whitelist', () => {
+    let transaction, result, user2
+
+    describe('Success', () => {
+
+      it('Checks whitelisted status', async () => {
+     
+        expect(await crowdsale.addToWhitelist()).to.equal(user1.address, true)
+      })
+    })
+  })
 
   describe('Buying Tokens', () => {
     let transaction, result 
@@ -109,18 +120,11 @@ describe('Crowdsale', () => {
           expect(await token.balanceOf(user1.address)).to.equal(amount)
         })
 
-        it('adds to whitelist', async () => {
-          transaction = await crowdsale.connect(user2).addToWhitelist(user2.address)
-          result = await transaction.wait()
-        })
-
-
-      
       })
       
       describe('Failure', () => {
-        it('prevents non-whitelisted people from buying', async () => {
-          expect(user1.sendTransaction({ to: crowdsale.address, value: amount, gasLimit: 10000})).to.be.reverted
+        it('', async () => {
+          
         })
       })
 })
