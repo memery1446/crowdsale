@@ -51,16 +51,18 @@ describe('Crowdsale', () => {
   })
 
   describe('Whitelist', () => {
-    let transaction, result
+    let transaction, result, whitelist
 
 
 
     describe('Success', () => {
-
+      
+beforeEach(async () => {
+         
+        })
       it('Checks whitelisted status', async () => {
-        transaction = await crowdsale.connect(user2).addToWhitelist(false)
-        result = await transaction.wait()
-//whitelist[_address].structAdded = true;
+        expect(await crowdsale.addWL(user2.address)).to.equal(whitelist(true))
+
       })
     })
   })
@@ -99,6 +101,8 @@ describe('Crowdsale', () => {
         await expect(crowdsale.connect(user1).buyTokens(tokens(10), { value: 0 })).to.be.reverted
           ////if they don't send in enough, ETH, reverted///
       })
+
+
       
     })
 

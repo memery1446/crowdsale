@@ -12,19 +12,17 @@ contract Crowdsale {
 	uint256 public maxTokens;
 	uint256 public tokensSold;
 	uint256 public deadline;
-	
- 
+
+ 	mapping(address => bool) public whitelist; 
+ 			//key    value// //this is the check//
+
+
+
+
 
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
-	
-
-    struct Whitelist {
-        address structAddress;
-        bool structAdded;
-    }
-
-  mapping (address => Whitelist) public whitelist; 
+	 
 
 	constructor(
 		Token _token,
@@ -44,15 +42,10 @@ contract Crowdsale {
 
 		_; 
 	}
-
-
-    function addToWhitelist(address _address) public onlyOwner {
-        Whitelist storage whitelistBool = whitelist[_address];
-
-         whitelist[_address].structAdded = true;
-
-
+	    function addWL(address _address) public onlyOwner {
+        whitelist[_address] = true;
     }
+
 
 	function setDeadline() public {
 		deadline = block.timestamp + 100;
@@ -65,7 +58,7 @@ contract Crowdsale {
     }
 
 	receive() external payable {
-	//require(whitelistbool[msg.sender].structAdded = true);//	
+
 		uint256 amount = msg.value / price;
 		buyTokens(amount * 1e18);
 	}
@@ -74,10 +67,12 @@ contract Crowdsale {
 	function crowdsaleOpen() public view returns (bool) {
 		return block.timestamp < deadline;
 	}
+
+
 												
 	function buyTokens(uint256 _amount) public payable {	
 
-		require(whitelist[msg.sender].structAdded = true, "must be on whitelist");
+		require(whitelist[msg.sender] = true);
 
 		require(msg.value == (_amount / 1e18) * price);
 		require(token.balanceOf(address(this)) >= _amount);		
