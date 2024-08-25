@@ -12,22 +12,21 @@ contract Crowdsale {
 	uint256 public maxTokens;
 	uint256 public tokensSold;
 	uint256 public deadline;
+	uint256 public start;
+	uint256 public end;
 
+		// Store whitelisted users in smart contract
  	mapping(address => bool) public whitelist; 
- 			//key    value// //this is the check//
-
-
-
-
-
+ 	whitelist[owner.address] true;
+ 			
 	event Buy(uint256 amount, address buyer);
 	event Finalize(uint256 amount, uint256 ethRaised);
 	 
-
 	constructor(
 		Token _token,
 		uint256 _price,
 		uint256 _maxTokens
+
 	) {
 
 		owner = msg.sender;
@@ -35,6 +34,12 @@ contract Crowdsale {
 		price = _price;
 		maxTokens = _maxTokens;	
 		
+		
+	}
+
+	modifier crowdsaleIsOver() {
+		require(block.timestamp<= end, "Crowdsale is Over");
+		_;
 	}
 
 	modifier onlyOwner() {
@@ -42,19 +47,21 @@ contract Crowdsale {
 
 		_; 
 	}
-	    function addWL(address _address) public onlyOwner {
+
+		// 1. create function to allow only owner to add people to whitelist
+
+
+	function addToWhitelist(address _address) public onlyOwner {
         whitelist[_address] = true;
     }
 
-
-	function setDeadline() public {
-		deadline = block.timestamp + 100;
-	}
-
-    modifier onlyWhileOpen () {
-    	require(block.timestamp < deadline, "Currently closed");
-
-    	_;
+// 1. Create a timestamp in your contract that restricts when people can buy.
+    function startCrowdsale() public {
+    	start = block.timestamp; 
+    }
+// 2. Require that this date is in the past before the purchase.
+    function endCrowdsale() public  {
+    	end = start + 2 weeks;
     }
 
 	receive() external payable {
@@ -62,17 +69,13 @@ contract Crowdsale {
 		uint256 amount = msg.value / price;
 		buyTokens(amount * 1e18);
 	}
-
-
-	function crowdsaleOpen() public view returns (bool) {
-		return block.timestamp < deadline;
-	}
-
-
 												
 	function buyTokens(uint256 _amount) public payable {	
 
-		require(whitelist[msg.sender] = true);
+			// 2.Only let people who are whitelisted buy tokens
+		require(whitelist[msg.sender] == true, "not on whitelist");
+
+		require(block.timestamp > start + 100, "crowdsale is closed");
 
 		require(msg.value == (_amount / 1e18) * price);
 		require(token.balanceOf(address(this)) >= _amount);		
