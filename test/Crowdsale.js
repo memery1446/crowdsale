@@ -51,13 +51,16 @@ describe('Crowdsale', () => {
   })
 
   describe('Whitelist', () => {
-    let transaction, result, user2
+    let transaction, result
+
+
 
     describe('Success', () => {
 
       it('Checks whitelisted status', async () => {
-     
-        expect(await crowdsale.addToWhitelist()).to.equal(user1.address, true)
+        transaction = await crowdsale.connect(user2).addToWhitelist(false)
+        result = await transaction.wait()
+//whitelist[_address].structAdded = true;
       })
     })
   })
