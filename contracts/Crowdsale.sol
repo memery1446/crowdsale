@@ -11,6 +11,8 @@ contract Crowdsale {
 	uint256 public price;
 	uint256 public maxTokens;
 	uint256 public tokensSold;
+	uint256 public start;
+	uint256 public end;
 
 
  	mapping(address => bool) public whitelist; 
@@ -40,9 +42,11 @@ contract Crowdsale {
 	}
 
 	
-	function addToWhitelist(address _address) public onlyOwner {
-        whitelist[_address] = true;
-    }
+	//function addToWhitelist(address _address) public onlyOwner {
+   //     whitelist[_address] = true;
+
+     //   whitelist[msg.sender] = true;
+    //}
 
 
 	receive() external payable {
@@ -54,12 +58,17 @@ contract Crowdsale {
 	function buyTokens(uint256 _amount) public payable {	
 
 			
-		require(whitelist[msg.sender] == true, "not on whitelist");
+		//require(whitelist[msg.sender] == true, "not on whitelist");
 
 		require(msg.value == (_amount / 1e18) * price, "not enough ether");
 		require(token.balanceOf(address(this)) >= _amount, "not enough tokens");		
-		
+
+		// MIN/MAX
+		require(_amount >= 8 * 1e18, "amount requested is below the minimum"); 
+		require(_amount <= 1000 * 1e18, "amount requested is above the limit");
+
 		require(token.transfer(msg.sender, _amount));
+
 
 		tokensSold += _amount;
 		

@@ -9,7 +9,7 @@ const ether = tokens
 
 describe('Crowdsale', () => {
   let token, crowdsale
-  let deployer, user1
+  let deployer, user1, user2
 
   beforeEach(async () => {
       //load contracts//
@@ -24,6 +24,7 @@ describe('Crowdsale', () => {
     accounts = await ethers.getSigners()
       deployer = accounts[0]
       user1 = accounts[1]
+      user2 = accounts[2]
     
   
 
@@ -53,21 +54,24 @@ describe('Crowdsale', () => {
   describe('Buying Tokens', () => {
     let transaction, result 
     let amount = tokens(10)
+    let amount2 = tokens(5)
+    let amount3 = tokens(2000)
 
     describe('Success', () => {
 
       beforeEach(async () => {
 
-             transaction = await crowdsale.connect(deployer).addToWhitelist(user1.address, true)
-         result = await transaction.wait()
+          //   transaction = await crowdsale.connect(deployer).addToWhitelist(user1.address, true)
+        // result = await transaction.wait()
          
-           //expect(await crowdsale.addToWhitelist(user1.address)).to.equal(true)    
+           //expect(await crowdsale.addToWhitelist(deployer.address)).to.equal(true)    
 
         transaction = await crowdsale.connect(user1).buyTokens(amount, { value: ether(10) })
         result = await transaction.wait()
 
 
       })
+
 
       it('transfers tokens', async () => {
         expect(await token.balanceOf(crowdsale.address)).to.equal(tokens(999990))
@@ -90,6 +94,12 @@ describe('Crowdsale', () => {
       it('rejects insufficient ETH', async () => {
         await expect(crowdsale.connect(user1).buyTokens(tokens(10), { value: 0 })).to.be.reverted
          
+      })
+      it('rejects insufficient token puchase amount', async () => {
+        await expect(crowdsale.connect(user2).buyTokens(tokens(10), { value: 10 })).to.be.reverted
+      })
+      it('rejects purchases over the token limit', async () => {
+        await expect(crowdsale.connect(user2).buyTokens(tokens(2000), { value: 2000 })).to.be.reverted
       })
 
 
