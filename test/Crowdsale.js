@@ -9,7 +9,7 @@ const ether = tokens
 
 describe('Crowdsale', () => {
   let token, crowdsale
-  let deployer, user1, user2
+  let deployer, user1
 
   beforeEach(async () => {
       //load contracts//
@@ -24,7 +24,7 @@ describe('Crowdsale', () => {
     accounts = await ethers.getSigners()
       deployer = accounts[0]
       user1 = accounts[1]
-      user2 = accounts[2]
+    
   
 
       //deploy crowdsale//
@@ -50,20 +50,6 @@ describe('Crowdsale', () => {
     })
   })
 
-  describe('Whitelist', () => {
-    let transaction, result
-    describe('Success', () => {
-      
-beforeEach(async () => {
-         
-        })
-      it('', async () => {
-      
-
-      })
-    })
-  })
-
   describe('Buying Tokens', () => {
     let transaction, result 
     let amount = tokens(10)
@@ -71,9 +57,16 @@ beforeEach(async () => {
     describe('Success', () => {
 
       beforeEach(async () => {
-  
+
+             transaction = await crowdsale.connect(deployer).addToWhitelist(user1.address, true)
+         result = await transaction.wait()
+         
+           //expect(await crowdsale.addToWhitelist(user1.address)).to.equal(true)    
+
         transaction = await crowdsale.connect(user1).buyTokens(amount, { value: ether(10) })
         result = await transaction.wait()
+
+
       })
 
       it('transfers tokens', async () => {
@@ -96,7 +89,7 @@ beforeEach(async () => {
 
       it('rejects insufficient ETH', async () => {
         await expect(crowdsale.connect(user1).buyTokens(tokens(10), { value: 0 })).to.be.reverted
-          ////if they don't send in enough, ETH, reverted///
+         
       })
 
 
@@ -106,7 +99,7 @@ beforeEach(async () => {
   })
 
   describe('Sending ETH', () => {
-      let transaction, result, whitelist, _addr
+      let transaction, result
       let amount = ether(10)
 
       describe('Success', () => {
@@ -125,13 +118,8 @@ beforeEach(async () => {
         })
 
       })
+    })
       
-      describe('Failure', () => {
-        it('', async () => {
-          
-        })
-      })
-})
 
   describe('Updating Price', () => {
     let transaction, result
