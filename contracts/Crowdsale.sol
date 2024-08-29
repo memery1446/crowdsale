@@ -48,6 +48,16 @@ contract Crowdsale {
      //   whitelist[msg.sender] = true;
     //}
 
+    function timedCrowdsale() public onlyOwner {
+    	start = block.timestamp; 
+    	end = block.timestamp + 2 weeks;
+    }
+
+    modifier duringCrowdsale () {
+    	require(block.timestamp < end, "the Crowdsale has closed");
+
+    	_;
+    }
 
 	receive() external payable {
 
