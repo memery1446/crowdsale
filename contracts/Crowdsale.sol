@@ -42,11 +42,12 @@ contract Crowdsale {
 	}
 
 	
-	//function addToWhitelist(address _address) public onlyOwner {
-   //     whitelist[_address] = true;
+	function addToWhitelist(address _address) public onlyOwner {
+        whitelist[_address] = true;
+   			whitelist[owner] = true; 
 
-     //   whitelist[msg.sender] = true;
-    //}
+     
+    }
 
     function timedCrowdsale() public onlyOwner {
     	start = block.timestamp; 

@@ -30,7 +30,7 @@ describe('Crowdsale', () => {
 
       //deploy crowdsale//
     crowdsale = await Crowdsale.deploy(token.address, ether(1), '1000000')
-
+blockTimestamp = (await ethers.provider.getBlock('latest')).timestamp;
       //send tokens to crowdsale//
     let transaction = await token.connect(deployer).transfer(crowdsale.address, tokens(1000000))
     await transaction.wait()
@@ -54,8 +54,7 @@ describe('Crowdsale', () => {
   describe('Buying Tokens', () => {
     let transaction, result 
     let amount = tokens(10)
-    let amount2 = tokens(5)
-    let amount3 = tokens(2000)
+    
 
     describe('Success', () => {
 
@@ -98,9 +97,9 @@ describe('Crowdsale', () => {
       it('rejects insufficient token puchase amount', async () => {
         await expect(crowdsale.connect(user2).buyTokens(tokens(0), { value: 0 })).to.be.reverted
       })
-      // it('rejects purchases over the token limit', async () => {
-      //   await expect(crowdsale.connect(user2).buyTokens(tokens(2000), { value: 2000 })).to.be.reverted
-      // })
+      it('rejects purchases over the token limit', async () => {
+         await expect(crowdsale.connect(user2).buyTokens(tokens(2000), { value: 2000 })).to.be.reverted
+       })
 
 
       
