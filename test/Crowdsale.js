@@ -30,7 +30,7 @@ describe('Crowdsale', () => {
 
       //deploy crowdsale//
     crowdsale = await Crowdsale.deploy(token.address, ether(1), '1000000')
-blockTimestamp = (await ethers.provider.getBlock('latest')).timestamp;
+    blockTimestamp = (await ethers.provider.getBlock('latest')).timestamp;
       //send tokens to crowdsale//
     let transaction = await token.connect(deployer).transfer(crowdsale.address, tokens(1000000))
     await transaction.wait()
@@ -89,7 +89,7 @@ blockTimestamp = (await ethers.provider.getBlock('latest')).timestamp;
     })
 
     describe('Failure', () => {
-
+      
       it('rejects insufficient ETH', async () => {
         await expect(crowdsale.connect(user1).buyTokens(tokens(10), { value: 0 })).to.be.reverted
          
@@ -100,7 +100,9 @@ blockTimestamp = (await ethers.provider.getBlock('latest')).timestamp;
       it('rejects purchases over the token limit', async () => {
          await expect(crowdsale.connect(user2).buyTokens(tokens(2000), { value: 2000 })).to.be.reverted
        })
-
+      it('rejects purchases after sale has closed', aync () => {
+        await expect crowesale.connect
+      })
 
       
     })
